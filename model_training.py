@@ -2,7 +2,9 @@ from sklearn.ensemble import RandomForestClassifier,GradientBoostingClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
+from sklearn.neighbors import KNeighborsClassifier
 import time
+import pickle as pkl
 
 def train_model(X_train, y_train, classifier_num:int):
     """Train the model with the training data, and return the train model \n
@@ -11,17 +13,20 @@ def train_model(X_train, y_train, classifier_num:int):
         2 = Gradient Boosting classifier\n
         3 = Support Vector Machine classifier\n
         4 = Logistic Regression classifier\n
+        5 = K-Nearest neighbour classifier\n
         :return trained_model"""
     classifier = None
 
     if classifier_num == 1:
         classifier = RandomForestClassifier()
     elif classifier_num == 2:
-        classifier = GradientBoostingClassifier()
+        classifier = GradientBoostingClassifier(learning_rate=0.01,max_depth=3,max_features="sqrt",min_samples_leaf=2, min_samples_split=5,n_estimators=100)
     elif classifier_num == 3:
         classifier = SVC()
     elif classifier_num == 4:
         classifier = LogisticRegression()
+    elif classifier_num == 5:
+        classifier = KNeighborsClassifier(algorithm="brute", n_neighbors=10,p=1,weights="uniform")
     else:
         raise Exception("Wrong classifier was chosen")
 
@@ -30,6 +35,9 @@ def train_model(X_train, y_train, classifier_num:int):
     classifier.fit(X_train, y_train)
     print(f"Training Finished in {time.time() - start_time} seconds")
     return classifier
+
+
+
 
 def get_best_parameters(X_train, y_train, classifier_num:int, cv:int, use_full_cores=True):
     """Train the GridSearchCV model with the training data, and return the train GridSearchCV model \n
@@ -84,6 +92,17 @@ def get_best_parameters(X_train, y_train, classifier_num:int, cv:int, use_full_c
             'C': [0.1, 1, 10, 100],
             'solver': ['liblinear']
         }
+
+    elif classifier_num == 5:
+        classifier = KNeighborsClassifier()
+
+        param_grid = {
+            'n_neighbors': [3, 5, 10],
+            'weights': ['uniform', 'distance'],
+            'p': [1, 2],
+            'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute']
+        }
+
     else:
         raise Exception("Wrong classifier was chosen")
 
@@ -105,5 +124,8 @@ def get_best_parameters(X_train, y_train, classifier_num:int, cv:int, use_full_c
     return best_params, best_score, gsc
 
 
+def save_model(trained_model,filename):
+    """Save the trained model in pickle file"""
+    pkl.dump(trained_model,open(f"models/{filename}.pkl","wb"))
 
 
