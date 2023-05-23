@@ -4,6 +4,10 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import SequentialFeatureSelector
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 from mlxtend.feature_selection import ExhaustiveFeatureSelector
 import time
 
@@ -54,7 +58,7 @@ def use_feature_selection_model(X_train, y_train, n_features, tol: float, direct
     tol: If the score is not incremented by at least tol between two consecutive feature additions or removals, stop adding or removing.\n
         :return list of selected features contain either True(selected) or False(ignored)"""
 
-    classifier = RandomForestClassifier()
+    classifier = SVC()
 
     sfs = SequentialFeatureSelector(classifier, n_features_to_select=n_features, direction=direction, tol=tol,n_jobs=-1)
 
@@ -65,7 +69,7 @@ def use_feature_selection_model(X_train, y_train, n_features, tol: float, direct
     return sfs.get_support()
 
 def Exhaustive_selection(X, y):
-    classifier = RandomForestClassifier()
+    classifier = SVC()
 
     efs = ExhaustiveFeatureSelector(classifier,min_features=2,max_features=8, n_jobs=-1)
     print("Exhaustive Selection Started...")

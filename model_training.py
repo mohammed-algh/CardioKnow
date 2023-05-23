@@ -1,8 +1,9 @@
-from sklearn.ensemble import RandomForestClassifier,GradientBoostingClassifier
+from sklearn.ensemble import RandomForestClassifier,GradientBoostingClassifier, VotingClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import GridSearchCV
+
 import time
 import pickle as pkl
 
@@ -27,6 +28,12 @@ def train_model(X_train, y_train, classifier_num:int):
         classifier = LogisticRegression()
     elif classifier_num == 5:
         classifier = KNeighborsClassifier(algorithm="brute", n_neighbors=10,p=1,weights="uniform")
+    elif classifier_num == 6:
+        rf = RandomForestClassifier(max_depth=5,max_features='sqrt',min_samples_leaf=1,min_samples_split=5,n_estimators=100)
+        gb = GradientBoostingClassifier(learning_rate=0.01,max_depth=3,max_features="sqrt",min_samples_leaf=2, min_samples_split=5,n_estimators=100)
+        knn = KNeighborsClassifier(algorithm="brute", n_neighbors=10,p=1,weights="uniform")
+        classifier = VotingClassifier(estimators=[('rf', rf), ('gb', gb), ('knn', knn)], voting='soft')
+
     else:
         raise Exception("Wrong classifier was chosen")
 
