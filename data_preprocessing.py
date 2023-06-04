@@ -1,3 +1,5 @@
+import pickle
+
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.decomposition import PCA
@@ -39,6 +41,8 @@ def feature_scaler(X):
     :return X"""
     scaler = MinMaxScaler()
     X_scaled = scaler.fit_transform(X)
+
+
 
     return X_scaled
 

@@ -56,7 +56,7 @@ def main():
 
     if st.button("Process Data"):
         text = model_predict(age,gender,height,weight,systolic_bp,diastolic_bp,cholesterol,glucose,smoking,alcohol,active)
-        st.write(text)
+        st.write(f"# {text}")
 
 if __name__ == "__main__":
     main()
